@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+encoding//scripts/joint_states_group_grabber.py=utf-8
+encoding//scripts/moveit_joints_goal.py=utf-8
+encoding//scripts/moveit_pose_goal.py=utf-8
+encoding//scripts/navigation.py=utf-8

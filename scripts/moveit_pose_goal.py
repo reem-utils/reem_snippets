@@ -76,7 +76,7 @@ def create_move_group_pose_goal(goal_pose=Pose(), group="right_arm_torso", end_l
     orientation_c.weight = 1.0
     goal_c.orientation_constraints.append(orientation_c)
     moveit_goal.request.goal_constraints.append(goal_c)
-    moveit_goal.request.num_planning_attempts = 5 # The number of times this plan is to be computed. Shortest solution will be reported.
+    moveit_goal.request.num_planning_attempts = 1 # The number of times this plan is to be computed. Shortest solution will be reported.
     moveit_goal.request.allowed_planning_time = 5.0
     moveit_goal.planning_options.plan_only = plan_only
     moveit_goal.planning_options.planning_scene_diff.is_diff = True # Necessary

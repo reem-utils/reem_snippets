@@ -19,7 +19,7 @@ right_arm_torso = ['torso_1_joint', 'torso_2_joint',
                    'arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
                    'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
                    'arm_right_7_joint']
-right_arm_torso_grasping = same as right_arm_torso
+
 
 left_arm = ['arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
            'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
@@ -28,12 +28,10 @@ left_arm_torso = ['torso_1_joint', 'torso_2_joint',
                    'arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
                    'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
                    'arm_left_7_joint']
-left_arm_torso_grasping = same as left_arm_torso
 
 Other groups: 
-head = ['head_1_joint', 'head_2_joint']
-both_arms = right_arm_torso + left_arm
-both_arms_and_head = right_arm_torso + left_arm + head
+both_arms = right_arm + left_arm
+both_arms_torso = right_arm_torso + left_arm
 right_hand = ['hand_right_index_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint']
 left_hand = ['hand_left_index_joint', 'hand_left_middle_joint', 'hand_left_thumb_joint']
 
@@ -79,7 +77,7 @@ def create_move_group_joints_goal(joint_names, joint_values, group="right_arm_to
         goal_c.joint_constraints.append(joint_c)
 
     moveit_goal.request.goal_constraints.append(goal_c)
-    moveit_goal.request.num_planning_attempts = 5
+    moveit_goal.request.num_planning_attempts = 1
     moveit_goal.request.allowed_planning_time = 5.0
     moveit_goal.planning_options.plan_only = plan_only
     moveit_goal.planning_options.planning_scene_diff.is_diff = True

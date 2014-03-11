@@ -13,14 +13,12 @@ Type of message: moveit_msgs/MoveGroupGoal
 Groups of REEM and their end effectors:
 
 right_arm -> arm_right_tool_link
-right_arm_torso -> arm_right_tool_link
-right_arm_torso_grasping -> hand_right_grasping_frame
+right_arm_torso -> hand_right_grasping_frame
 
 left_arm -> arm_left_tool_link
-left_arm_torso -> arm_left_tool_link
-left_arm_torso_grasping -> hand_left_grasping_frame
+left_arm_torso -> hand_left_grasping_frame
 
-Other groups: both_arms, head, right_hand, left_hand
+Other groups: both_arms, both_arms_torso
 
 """
 
@@ -76,7 +74,7 @@ def create_move_group_pose_goal(goal_pose=Pose(), group="right_arm_torso", end_l
     orientation_c.weight = 1.0
     goal_c.orientation_constraints.append(orientation_c)
     moveit_goal.request.goal_constraints.append(goal_c)
-    moveit_goal.request.num_planning_attempts = 5 # The number of times this plan is to be computed. Shortest solution will be reported.
+    moveit_goal.request.num_planning_attempts = 1 # The number of times this plan is to be computed. Shortest solution will be reported.
     moveit_goal.request.allowed_planning_time = 5.0
     moveit_goal.planning_options.plan_only = plan_only
     moveit_goal.planning_options.planning_scene_diff.is_diff = True # Necessary
@@ -103,7 +101,7 @@ if __name__=='__main__':
     # roll = rotation over X, pitch = rotation over Y, yaw = rotation over Z
     quat = quaternion_from_euler(0.0, 0.0, 0.0) # roll, pitch, yaw
     goal_pose.orientation = Quaternion(*quat.tolist())
-    moveit_goal = create_move_group_pose_goal(goal_pose, group="right_arm", end_link_name="arm_right_tool_link", plan_only=True)
+    moveit_goal = create_move_group_pose_goal(goal_pose, group="right_arm", end_link_name="hand_right_grasping_frame", plan_only=True)
     rospy.loginfo("Sending goal...")
     moveit_ac.send_goal(moveit_goal)
     rospy.loginfo("Waiting for result...")

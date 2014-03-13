@@ -34,7 +34,7 @@ def send_REEM_to_home_pose():
     
     rospy.loginfo("Sending REEM to home position.")
     
-    joint_names = ['head_1_joint', 'head_2_joint', 'torso_1_joint', 'torso_2_joint',
+    joint_names = ['torso_1_joint', 'torso_2_joint',
                    'arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
                    'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
                    'arm_right_7_joint', 'arm_left_1_joint', 'arm_left_2_joint',
@@ -44,7 +44,7 @@ def send_REEM_to_home_pose():
     joint_list_home = len(joint_names)*[0.0]
 
     moveit_goal = create_move_group_joints_goal(joint_names, joint_list_home, 
-                                                group="both_arms_and_head", plan_only=False)
+                                                group="both_arms_torso", plan_only=False)
     rospy.logdebug("Sending goal...")
     moveit_ac.send_goal(moveit_goal)
     rospy.logdebug("Waiting for result...")

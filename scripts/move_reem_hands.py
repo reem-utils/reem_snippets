@@ -1,22 +1,43 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Created on Sun March 03 17:55:00 2014
+Created on Sun Jan 12 19:29:00 2014
 
 @author: Sam Pfeiffer
 
-Send motions to REEM using play_motion.
+Send goals to the hands of REEM.
 
 Usage:
+move_reem_hands.py <right/left> <thumb_joint> <middle_joint> <index_joint> 
+or (without parameters)
+move_reem_hands.py
+Which will open the right hand (like move_reem_hands.py right 0.1 0.1 0.1 )
 
 
 Also:
 
-rosrun actionlib axclient.py /play_motion
+rosrun actionlib axclient.py /right_hand_controller/follow_joint_trajectory
 
-motion_name: 'arms_t'
-reach_time: 
-  secs: 3
+trajectory: 
+  header: 
+    seq: 0
+    stamp: 
+      secs: 0
+      nsecs: 0
+    frame_id: ''
+  joint_names: ['hand_right_thumb_joint',  'hand_right_middle_joint',  'hand_right_index_joint']
+  points:
+      -
+        positions: [0.0, 0.0, 0.0]
+        velocities: [0.0, 0.0, 0.0]
+        accelerations: []
+        time_from_start: 
+          secs: 2
+          nsecs: 0
+path_tolerance: []
+goal_tolerance: []
+goal_time_tolerance: 
+  secs: 0
   nsecs: 0
 priority: 0
   
@@ -27,13 +48,15 @@ import actionlib
 import rospy
 
 
-from play_motion_msgs.msg import PlayMotionAction, PlayMotionGoal, PlayMotionResult
+from sensor_msgs.msg import JointState
+from control_msgs.msg import FollowJointTrajectoryGoal, FollowJointTrajectoryAction, FollowJointTrajectoryResult, JointTolerance
+from trajectory_msgs.msg import JointTrajectoryPoint
 
 # Useful dictionary for reading in an human friendly way errors
 traj_error_dict = {}
-for name in PlayMotionResult.__dict__.keys():
+for name in FollowJointTrajectoryResult.__dict__.keys():
     if not name[:1] == '_':
-        code = PlayMotionResult.__dict__[name]
+        code = FollowJointTrajectoryResult.__dict__[name]
         traj_error_dict[code] = name
 
 def createHandGoal(side, j1, j2, j3):

@@ -42,6 +42,14 @@ def send_REEM_to_home_pose():
                    'arm_left_6_joint', 'arm_left_7_joint']
     # home pose
     joint_list_home = len(joint_names)*[0.0]
+    joint_list_home[2] = -0.1 # shoulders move backwards a bit
+    joint_list_home[9] = -0.1 
+    joint_list_home[3] = 0.1 # shoulders go away from torso a bit
+    joint_list_home[10] = 0.1 
+    joint_list_home[5] = 0.4 # elbows bend a bit
+    joint_list_home[12] = 0.4
+    joint_list_home[8] = 0.5 # turn wrists
+    joint_list_home[15] = 0.5
 
     moveit_goal = create_move_group_joints_goal(joint_names, joint_list_home, 
                                                 group="both_arms_torso", plan_only=False)

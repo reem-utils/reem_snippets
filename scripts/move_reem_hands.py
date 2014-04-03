@@ -9,9 +9,13 @@ Send goals to the hands of REEM.
 
 Usage:
 move_reem_hands.py <right/left> <thumb_joint> <middle_joint> <index_joint> 
+or (with predefined pose)
+move_reem_hands.py <right/left> <open/pregrasp/closed>
 or (without parameters)
 move_reem_hands.py
 Which will open the right hand (like move_reem_hands.py right 0.1 0.1 0.1 )
+
+Also accepts shortcuts like "l = left", "r = right", "o = open", "c = closed", "p = pregrasp"
 
 
 Also:
@@ -46,6 +50,7 @@ priority: 0
 import sys
 import actionlib
 import rospy
+import rosparam
 
 
 from sensor_msgs.msg import JointState
@@ -98,15 +103,38 @@ if __name__ == '__main__':
         side = "right"
         goal = createHandGoal(side, 0.1, 0.1, 0.1)
     elif len(sys.argv) == 5:
-        side = sys.argv[1]
+        if sys.argv[1].startswith('l'):
+            side = "left"
+        elif sys.argv[1].startswith('r'):
+            side = "right"
         thumb_joint = float(sys.argv[2])
         middle_joint = float(sys.argv[3])
         index_joint = float(sys.argv[4])
         goal = createHandGoal(side, thumb_joint, middle_joint, index_joint)
         rospy.loginfo("Will move " + side + " hand to poses: " + str(thumb_joint) + " " + str(middle_joint) + " "  + str(index_joint))
+    elif len(sys.argv) == 3:
+        if sys.argv[1].startswith('l'):
+            side = "left"
+        elif sys.argv[1].startswith('r'):
+            side = "right"
+        if sys.argv[2].startswith('p'): # pre-grasp position
+            pose_to_move = "pregrasp"
+            goal = createHandGoal(side, 1.5, 0.1, 0.1)
+        elif sys.argv[2].startswith('o'): # open position
+            pose_to_move = "open"
+            goal = createHandGoal(side, 0.1, 0.1, 0.1)
+        elif sys.argv[2].startswith('g') or sys.argv[2].startswith('c'): # close position
+            pose_to_move = "closed"
+            if rosparam.get_param('/use_sim_time'):
+                goal = createHandGoal(side, 1.5, 2.0, 2.0)
+            else:
+                goal = createHandGoal(side, 1.5, 4.0, 4.0)
+        rospy.loginfo("Will move " + side + " hand to pose: " + pose_to_move)
     else:
         rospy.loginfo("Incorrect number of parameters, usage:")
         rospy.loginfo("move_reem_hands.py <right/left> <thumb_joint> <middle_joint> <index_joint> ")
+        rospy.loginfo("move_reem_hands.py <right/left> <open/pregrasp/closed> ")
+        rospy.loginfo('Also accepts shortcuts like "l = left", "r = right", "o = open", "c = closed", "p = pregrasp"')
         exit(0)
     hand_as = actionlib.SimpleActionClient('/' + side + '_hand_controller/follow_joint_trajectory', FollowJointTrajectoryAction)
     rospy.loginfo("Connecting to " + side + " hand AS...")

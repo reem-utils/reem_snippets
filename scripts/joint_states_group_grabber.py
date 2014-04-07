@@ -16,8 +16,8 @@ from sensor_msgs.msg import JointState
 from control_msgs.msg import FollowJointTrajectoryGoal
 from trajectory_msgs.msg import JointTrajectoryPoint
 
-groups = ["all_joints", "left_arm", "right_arm", "left_arm_torso", "right_arm_torso", "torso", "head", "right_hand", "left_hand", "right_hand_all", "left_hand_all"]
-shortnamegroups = ["a", "la", "ra", "lat", "rat", "t", "h", "rh", "lh", "rha", "lha"]
+groups = ["all_joints", "left_arm", "right_arm", "both_arms", "left_arm_torso", "right_arm_torso", "both_arms_torso", "torso", "head", "right_hand", "left_hand", "right_hand_all", "left_hand_all"]
+shortnamegroups = ["a", "la", "ra", "ba", "lat", "rat", "bat", "t", "h", "rh", "lh", "rha", "lha"]
 
 
 class jointStateGrabber():
@@ -48,6 +48,8 @@ class jointStateGrabber():
         self.right_arm = ['arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
                            'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
                            'arm_right_7_joint']
+        self.both_arms = self.left_arm + self.right_arm
+        self.torso = ['torso_1_joint', 'torso_2_joint']
         self.right_arm_torso = ['torso_1_joint', 'torso_2_joint',
                            'arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
                            'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
@@ -56,8 +58,8 @@ class jointStateGrabber():
                            'arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
                            'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
                            'arm_left_7_joint']
+        self.both_arms_torso = self.torso + self.both_arms
         self.head = ['head_1_joint', 'head_2_joint']
-        self.torso = ['torso_1_joint', 'torso_2_joint']
         self.right_hand_all = ['hand_right_index_1_joint', 'hand_right_index_2_joint', 'hand_right_index_3_joint',
                                'hand_right_index_joint', 'hand_right_middle_1_joint', 'hand_right_middle_2_joint',
                                'hand_right_middle_3_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint']

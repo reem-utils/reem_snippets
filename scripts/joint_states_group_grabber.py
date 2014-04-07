@@ -106,11 +106,11 @@ class jointStateGrabber():
         names, values = self.getNamesAndMsgList(group=group)
         print group + " = " + str(names)
         print "[ ",
-        for val in values:
-            if val == values[-1]: # if it's the last one dont put comma and add an enter
-                print str(val) + " ]"
+        for i in range(0, len(values)):
+            if i == (len(values) - 1): # if it's the last one dont put comma and add an enter
+                print str(values[i]) + " ]"
             else:
-                print str(val)+",",
+                print str(values[i])+",",
 
 
 def usage(program_name):

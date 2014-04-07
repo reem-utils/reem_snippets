@@ -1,4 +1,4 @@
-#
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Created on Jan 13 19:06:55 2014
@@ -28,47 +28,25 @@ class jointStateGrabber():
 
     def __init__(self):
         self.current_joint_states = None
-        self.all_joints = ['torso_1_joint', 'torso_2_joint',
-                           'head_1_joint', 'head_2_joint',
-                           'arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
-                           'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
-                           'arm_left_7_joint',
-                           'arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
-                           'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
-                           'arm_right_7_joint',
-                           'hand_right_index_1_joint', 'hand_right_index_2_joint', 'hand_right_index_3_joint',
-                           'hand_right_index_joint', 'hand_right_middle_1_joint', 'hand_right_middle_2_joint',
-                           'hand_right_middle_3_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint',
-                           'hand_left_index_1_joint', 'hand_left_index_2_joint', 'hand_left_index_3_joint',
-                           'hand_left_index_joint', 'hand_left_middle_1_joint', 'hand_left_middle_2_joint',
-                           'hand_left_middle_3_joint', 'hand_left_middle_joint', 'hand_left_thumb_joint']
+        self.head = ['head_1_joint', 'head_2_joint']
+        self.torso = ['torso_1_joint', 'torso_2_joint']
         self.left_arm = ['arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
                            'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
                            'arm_left_7_joint']
         self.right_arm = ['arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
                            'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
                            'arm_right_7_joint']
-        self.both_arms = self.left_arm + self.right_arm
-        self.torso = ['torso_1_joint', 'torso_2_joint']
-        self.right_arm_torso = ['torso_1_joint', 'torso_2_joint',
-                           'arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
-                           'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
-                           'arm_right_7_joint']
-        self.left_arm_torso = ['torso_1_joint', 'torso_2_joint',
-                           'arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
-                           'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
-                           'arm_left_7_joint']
-        self.both_arms_torso = self.torso + self.both_arms
-        self.head = ['head_1_joint', 'head_2_joint']
-        self.right_hand_all = ['hand_right_index_1_joint', 'hand_right_index_2_joint', 'hand_right_index_3_joint',
-                               'hand_right_index_joint', 'hand_right_middle_1_joint', 'hand_right_middle_2_joint',
-                               'hand_right_middle_3_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint']
-        self.right_hand = ['hand_right_index_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint'] # Only the actuated
-        self.left_hand_all = ['hand_left_index_1_joint', 'hand_left_index_2_joint', 'hand_left_index_3_joint',
-                          'hand_left_index_joint', 'hand_left_middle_1_joint', 'hand_left_middle_2_joint',
-                          'hand_left_middle_3_joint', 'hand_left_middle_joint', 'hand_left_thumb_joint']
         self.left_hand = ['hand_left_index_joint', 'hand_left_middle_joint', 'hand_left_thumb_joint'] # Only the actuated
-
+        self.left_hand_all = self.left_hand + ['hand_left_index_1_joint', 'hand_left_index_2_joint', 'hand_left_index_3_joint',
+                          'hand_left_middle_1_joint', 'hand_left_middle_2_joint', 'hand_left_middle_3_joint']
+        self.right_hand = ['hand_right_index_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint'] # Only the actuated
+        self.right_hand_all = self.right_hand + ['hand_right_index_1_joint', 'hand_right_index_2_joint', 'hand_right_index_3_joint',
+                               'hand_right_middle_1_joint', 'hand_right_middle_2_joint', 'hand_right_middle_3_joint']
+        self.all_joints = self.torso + self.head + self.left_arm + self.right_arm + self.left_hand_all + self.right_hand_all
+        self.right_arm_torso = self.torso + self.right_arm
+        self.left_arm_torso = self.torso + self.left_arm
+        self.both_arms = self.left_arm + self.right_arm
+        self.both_arms_torso = self.torso + self.both_arms
         self.ids_list = []
 
         self.subs = rospy.Subscriber('/joint_states', JointState, self.getJointStates)

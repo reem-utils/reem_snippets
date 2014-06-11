@@ -16,91 +16,71 @@ from sensor_msgs.msg import JointState
 from control_msgs.msg import FollowJointTrajectoryGoal
 from trajectory_msgs.msg import JointTrajectoryPoint
 
-groups = ["all_joints", "left_arm", "right_arm", "left_arm_torso", "right_arm_torso", "torso", "head", "right_hand", "left_hand", "right_hand_all", "left_hand_all"]
-shortnamegroups = ["a", "la", "ra", "lat", "rat", "t", "h", "rh", "lh", "rha", "lha"]
+groups = ["all_joints", "left_arm", "right_arm", "both_arms", "left_arm_torso", "right_arm_torso", "both_arms_torso", "torso", "head", "right_hand", "left_hand", "right_hand_all", "left_hand_all"]
+shortnamegroups = ["a", "la", "ra", "ba", "lat", "rat", "bat", "t", "h", "rh", "lh", "rha", "lha"]
 
 
 class jointStateGrabber():
     """This class subscribes to the /joint_states topic of REEM
-    and you can ask it for the current status of a group and get it 
+    and you can ask it for the current status of a group and get it
     outputted in some useful format, i.e.: print on screen,
     play_motion format, old xml format... """
 
     def __init__(self):
         self.current_joint_states = None
-        self.all_joints = ['torso_1_joint', 'torso_2_joint',
-                           'head_1_joint', 'head_2_joint',
-                           'arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
-                           'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
-                           'arm_left_7_joint', 
-                           'arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
-                           'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
-                           'arm_right_7_joint',
-                           'hand_right_index_1_joint', 'hand_right_index_2_joint', 'hand_right_index_3_joint',
-                           'hand_right_index_joint', 'hand_right_middle_1_joint', 'hand_right_middle_2_joint',
-                           'hand_right_middle_3_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint',
-                           'hand_left_index_1_joint', 'hand_left_index_2_joint', 'hand_left_index_3_joint',
-                           'hand_left_index_joint', 'hand_left_middle_1_joint', 'hand_left_middle_2_joint',
-                           'hand_left_middle_3_joint', 'hand_left_middle_joint', 'hand_left_thumb_joint']
+        self.head = ['head_1_joint', 'head_2_joint']
+        self.torso = ['torso_1_joint', 'torso_2_joint']
         self.left_arm = ['arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
                            'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
                            'arm_left_7_joint']
         self.right_arm = ['arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
                            'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
                            'arm_right_7_joint']
-        self.right_arm_torso = ['torso_1_joint', 'torso_2_joint',
-                           'arm_right_1_joint', 'arm_right_2_joint', 'arm_right_3_joint',
-                           'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
-                           'arm_right_7_joint']
-        self.left_arm_torso = ['torso_1_joint', 'torso_2_joint',
-                           'arm_left_1_joint', 'arm_left_2_joint', 'arm_left_3_joint',
-                           'arm_left_4_joint', 'arm_left_5_joint', 'arm_left_6_joint',
-                           'arm_left_7_joint']
-        self.head = ['head_1_joint', 'head_2_joint']
-        self.torso = ['torso_1_joint', 'torso_2_joint']
-        self.right_hand_all = ['hand_right_index_1_joint', 'hand_right_index_2_joint', 'hand_right_index_3_joint',
-                               'hand_right_index_joint', 'hand_right_middle_1_joint', 'hand_right_middle_2_joint',
-                               'hand_right_middle_3_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint']
-        self.right_hand = ['hand_right_index_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint'] # Only the actuated
-        self.left_hand_all = ['hand_left_index_1_joint', 'hand_left_index_2_joint', 'hand_left_index_3_joint',
-                          'hand_left_index_joint', 'hand_left_middle_1_joint', 'hand_left_middle_2_joint',
-                          'hand_left_middle_3_joint', 'hand_left_middle_joint', 'hand_left_thumb_joint']
         self.left_hand = ['hand_left_index_joint', 'hand_left_middle_joint', 'hand_left_thumb_joint'] # Only the actuated
-        
+        self.left_hand_all = self.left_hand + ['hand_left_index_1_joint', 'hand_left_index_2_joint', 'hand_left_index_3_joint',
+                          'hand_left_middle_1_joint', 'hand_left_middle_2_joint', 'hand_left_middle_3_joint']
+        self.right_hand = ['hand_right_index_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint'] # Only the actuated
+        self.right_hand_all = self.right_hand + ['hand_right_index_1_joint', 'hand_right_index_2_joint', 'hand_right_index_3_joint',
+                               'hand_right_middle_1_joint', 'hand_right_middle_2_joint', 'hand_right_middle_3_joint']
+        self.all_joints = self.torso + self.head + self.left_arm + self.right_arm + self.left_hand_all + self.right_hand_all
+        self.right_arm_torso = self.torso + self.right_arm
+        self.left_arm_torso = self.torso + self.left_arm
+        self.both_arms = self.left_arm + self.right_arm
+        self.both_arms_torso = self.torso + self.both_arms
         self.ids_list = []
 
         self.subs = rospy.Subscriber('/joint_states', JointState, self.getJointStates)
-        
+
         # getting first message to correctly find joints
         while self.current_joint_states == None:
             rospy.sleep(0.1)
         rospy.loginfo("Node initialized. Ready to grab joint states.")
-        
+
 
     def getJointStates(self, data):
         #rospy.loginfo("Received from topic data!")
         self.current_joint_states = data
-        
+
     def createGoalFromCurrentJointStateForArm(self, group='right_arm_torso'):
         """ Get the joints for the specified group and create a FollowJointTrajectoryGoal
         with these joints and values for the joints """
         names, values = self.getNamesAndMsgList(group=group)
-    
+
         fjtg = FollowJointTrajectoryGoal()
         fjtg.trajectory.joint_names.extend(names)
         jtp = JointTrajectoryPoint(positions=values, velocities=len(values) * [0.0], time_from_start=0)
         fjtg.trajectory.points.append(jtp)
-        
+
         rospy.loginfo("follow joint trajectory goal:\n" + str(fjtg))
-        
+
         return fjtg
-        
-        
+
+
     def getNamesAndMsgList(self, group='right_arm_torso'):
         """ Get the joints for the specified group and return this name list and a list of it's values in joint_states
         Note: the names and values are correlated in position """
-        
-        list_to_iterate = getattr(self, group)        
+
+        list_to_iterate = getattr(self, group)
         curr_j_s = self.current_joint_states
         ids_list = []
         msg_list = []
@@ -111,7 +91,7 @@ class jointStateGrabber():
             msg_list.append(curr_j_s.position[idx_in_message])
         rospy.logdebug("Current position of joints in message: " + str(ids_list))
         rospy.logdebug("Current msg:" + str(msg_list))
-    
+
         return list_to_iterate, msg_list
 
     def printNamesAndValues(self, group='right_arm_torso'):
@@ -121,16 +101,16 @@ class jointStateGrabber():
         print "================="
         for nam, val in zip(names, values):
             print nam + " = " + str(val)
-            
+
     def printOnlyValues(self, group):
         names, values = self.getNamesAndMsgList(group=group)
         print group + " = " + str(names)
         print "[ ",
-        for val in values:
-            if val == values[-1]: # if it's the last one dont put comma and add an enter
-                print str(val) + " ]"
+        for i in range(0, len(values)):
+            if i == (len(values) - 1): # if it's the last one dont put comma and add an enter
+                print str(values[i]) + " ]"
             else:
-                print str(val)+",", 
+                print str(values[i])+",",
 
 
 def usage(program_name):
@@ -189,7 +169,7 @@ def getGroupNameIfExists(group_name):
             return group_name
     else:
         return None
-    
+
 
 if __name__ == '__main__':
     rospy.init_node('joint_state_grabber')
@@ -221,5 +201,5 @@ if __name__ == '__main__':
                 else:
                     node.printNamesAndValues(group_to_print)
                     node.printOnlyValues(group_to_print)
-              
+
     node.printNamesAndValues(group_to_print)

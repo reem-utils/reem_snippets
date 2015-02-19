@@ -95,6 +95,9 @@ if __name__=='__main__':
     # Set the position of the tool link, referenced to base_link
     # X = positive in front of the robot, Y = positive to the left of the robot, Z = positive going up
     goal_pose = Pose()
+    # For REEMC you may want to set the goal to:
+    #goal_point = Point(0.40, -0.29, 0.17)
+    # That's because it's referenced to base_link, and REEMC's base_link is in the waist not in the ground
     goal_point = Point(0.2, -0.2, 1.2) # right_arm arm_right_tool_link can definitely get here
     goal_pose.position = goal_point
     # Set the rotation of the tool link, all 0 means for the right hand palm looking left straight

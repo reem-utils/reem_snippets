@@ -92,10 +92,23 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(PROGRAMS
+    scripts/deg_to_yaw.py
+    scripts/depth_throtle_server.py
+    scripts/get_current_robot_pose.py
+    scripts/get_dist_between_frames.py
+    scripts/home_reem_pose.py
+    scripts/joint_states_group_grabber.py
+    scripts/listen_and_repeat.py
+    scripts/move_reem_hands.py
+    scripts/move_reem_head.py
+    scripts/moveit_joints_goal.py
+    scripts/moveit_pose_goal.py
+    scripts/navigation.py
+    scripts/send_motion.py
+    scripts/tts.py
+      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
 
 ## Mark executables and/or libraries for installation
 # install(TARGETS reem_snippets reem_snippets_node

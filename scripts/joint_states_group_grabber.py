@@ -16,7 +16,7 @@ from sensor_msgs.msg import JointState
 from control_msgs.msg import FollowJointTrajectoryGoal
 from trajectory_msgs.msg import JointTrajectoryPoint
 
-groups = ["all_joints", "left_arm", "right_arm", "both_arms", "left_arm_torso", "right_arm_torso", "both_arms_torso", "torso", "head", "right_hand", "left_hand", "right_hand_all", "left_hand_all"]
+groups = ["all_joints", "left_arm", "right_arm", "both_arms", "left_arm_torso", "right_arm_torso", "both_arms_torso", "torso", "head", "right_hand", "left_hand"]
 shortnamegroups = ["a", "la", "ra", "ba", "lat", "rat", "bat", "t", "h", "rh", "lh", "rha", "lha"]
 
 
@@ -37,12 +37,8 @@ class jointStateGrabber():
                            'arm_right_4_joint', 'arm_right_5_joint', 'arm_right_6_joint',
                            'arm_right_7_joint']
         self.left_hand = ['hand_left_index_joint', 'hand_left_middle_joint', 'hand_left_thumb_joint'] # Only the actuated
-        self.left_hand_all = self.left_hand + ['hand_left_index_1_joint', 'hand_left_index_2_joint', 'hand_left_index_3_joint',
-                          'hand_left_middle_1_joint', 'hand_left_middle_2_joint', 'hand_left_middle_3_joint']
         self.right_hand = ['hand_right_index_joint', 'hand_right_middle_joint', 'hand_right_thumb_joint'] # Only the actuated
-        self.right_hand_all = self.right_hand + ['hand_right_index_1_joint', 'hand_right_index_2_joint', 'hand_right_index_3_joint',
-                               'hand_right_middle_1_joint', 'hand_right_middle_2_joint', 'hand_right_middle_3_joint']
-        self.all_joints = self.torso + self.head + self.left_arm + self.right_arm + self.left_hand_all + self.right_hand_all
+        self.all_joints = self.torso + self.head + self.left_arm + self.right_arm + self.left_hand + self.right_hand
         self.right_arm_torso = self.torso + self.right_arm
         self.left_arm_torso = self.torso + self.left_arm
         self.both_arms = self.left_arm + self.right_arm
